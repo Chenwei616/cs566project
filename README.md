@@ -2,7 +2,7 @@
 
 https://chenwei616.github.io/cs566project/
 
-This is the repository for the source code of CS 566 project website
+This is the repository for the source code of CS 566 project website.
 
 
 # Website License
