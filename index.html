@@ -120,7 +120,7 @@
             <h2 class="title is-3">Project Presentation</h2>
           </div>
         </div>
-        <video id="matting-video" controls playsinline height="100%">
+        <video id="matting-video" controls playsinline height="500px">
           <source src="./static/videos/presentation.mp4" type="video/mp4">
         </video>
       </div>
@@ -143,12 +143,19 @@
               correlations, and transformation invariance. This work lays the foundation for future Martian surface classification
               and landing site selection for Mars rovers.
             </p>
-            
+            <div class="columns is-centered">
+              <div class="column is-four-fifths">
+                <img src="./static/images/crater_extraction.png" alt="Crater extraction results"
+                  style="width: 70%; display: block; margin: 0 auto;">
+                  <br>
+                <div class="title is-6 has-text-centered">Visualization of crater extraction</div>
+              </div>
+            </div>
             <p>
-              Identifying and cataloging impact craters is essential for understanding Martian topography and supporting tasks like 
-              landing-site selection and geological studies. However, optical imagery has limited high-resolution coverage, and spectral 
-              imagery suffers from shadow-induced information loss. To address these limitations, we adopt point-cloud-based semantic 
-              segmentation using high-resolution DEM data, which better preserves geometric information and enables broader coverage. 
+              Identifying and cataloging impact craters is essential for understanding Martian topography and supporting tasks like
+              landing-site selection and geological studies. However, optical imagery has limited high-resolution coverage, and spectral
+              imagery suffers from shadow-induced information loss. To address these limitations, we adopt point-cloud-based semantic
+              segmentation using high-resolution DEM data, which better preserves geometric information and enables broader coverage.
               Deep learning approaches can extract higher-level features and provide improved accuracy compared to traditional methods.
             </p>
             <br>
@@ -172,13 +179,14 @@
               <li><b>Buried craters</b> (&gt;200 km): Found in quasi-circular depressions</li>
             </ul>
             <p>
-              Craters vary drastically in size—from tens of centimeters to over 2,300 km in diameter—posing significant challenges for 
-              multi-scale segmentation and extraction.
+              Craters on Mars vary drastically in size, number, density, and morphology across different regions.
+              The largest confirmed crater exceeds 2,300 km in diameter and lies in the southern hemisphere,
+              while the smallest craters—only tens of centimeters wide—are ubiquitous.
             </p>
           </div>
           <div class="columns is-centered">
             <div class="column is-four-fifths">
-              <img src="./static/images/different_crater_type.png" alt="Different types of Martian craters"> 
+              <img src="./static/images/different_crater_type.png" alt="Different types of Martian craters">
               <div class="title is-6 has-text-centered">Different types of Martian craters</div>
             </div>
           </div>
@@ -191,16 +199,25 @@
   <!-- Data and Methods Section -->
   <section class="section">
     <div class="container is-max-desktop">
-      
+
       <!-- Dataset -->
       <div class="columns is-centered has-text-centered">
         <div class="column is-four-fifths">
           <h2 class="title is-3">Data</h2>
           <div class="content has-text-justified">
             <p>
-              We use HRSC DEM (100m) data to create a Martian crater point cloud dataset with comprehensive coverage of different crater types 
+              We use HRSC DEM (100m) data to create a Martian crater point cloud dataset with comprehensive coverage of different crater types
               and sizes for robust multi-scale evaluation.
             </p>
+            <p>
+              The data preprocessing pipeline consists of the following steps:
+            </p>
+            <ol>
+              <li>We first use the DEM data to create a point cloud, which is saved as the ground truth.</li>
+              <li>Based on the ground truth, we annotate the craters on the DEM data manually using the labelme tool, and save these as ground truth annotations in JSON format.</li>
+              <li>We transform the JSON annotations to PNG images, which are saved as the ground truth labels.</li>
+              <li>The final pair of point cloud and ground truth labels is used for training and testing the point cloud segmentation models.</li>
+            </ol>
           </div>
           <div class="columns is-centered">
             <div class="column is-four-fifths">
@@ -217,7 +234,7 @@
           <h2 class="title is-3">Methods</h2>
           <div class="content has-text-justified">
             <p>
-              We examine three point cloud networks—PointNet, PointNet++, and RandLA-Net. Focus on the segmentation performance and multi-scale 
+              We implemented and examined three point cloud networks—PointNet, PointNet++, and RandLA-Net. Focus on the segmentation performance and multi-scale
               sampling capabilities for handling unordered point data, point correlations, and transformation invariance.
             </p>
           </div>
@@ -225,19 +242,6 @@
       </div>
 
       <!-- Network Overview -->
-      <div class="columns is-centered">
-        <div class="column is-four-fifths">
-          <div class="content has-text-justified">
-            <div class="columns is-centered">
-              <div class="column is-four-fifths">
-                <img src="./static/images/classification+segmentation_network.png"
-                  alt="Classification and segmentation network overview">
-                <div class="title is-6 has-text-centered">Classification and segmentation network overview</div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
 
       <!-- PointNet -->
       <div class="columns is-centered">
@@ -245,7 +249,7 @@
           <h3 class="title is-4">PointNet</h3>
           <div class="content has-text-justified">
             <p>
-              PointNet uses symmetric functions (max pooling) to handle permutation invariance and includes a transformation network for 
+              PointNet uses symmetric functions (max pooling) to handle permutation invariance and includes a transformation network for
               transformation invariance, but lacks explicit multi-scale sampling.
             </p>
           </div>
@@ -256,14 +260,26 @@
           </div>
         </div>
       </div>
-
+      <div class="columns is-centered">
+        <div class="column is-four-fifths">
+          <div class="content has-text-justified">
+            <div class="columns is-centered">
+              <div class="column is-four-fifths">
+                <img src="./static/images/classification+segmentation_network.png"
+                  alt="Classification and segmentation network overview for PointNet">
+                <div class="title is-6 has-text-centered">Classification and segmentation network overview for PointNet</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
       <!-- PointNet++ -->
       <div class="columns is-centered">
         <div class="column is-four-fifths">
           <h3 class="title is-4">PointNet++</h3>
           <div class="content has-text-justified">
             <p>
-              PointNet++ extends PointNet with hierarchical processing, using farthest point sampling (FPS) and grouping to capture 
+              PointNet++ extends PointNet with hierarchical processing, using farthest point sampling (FPS) and grouping to capture
               multi-scale local structures and fine-grained patterns.
             </p>
           </div>
@@ -281,8 +297,15 @@
           <h3 class="title is-4">RandLA-Net</h3>
           <div class="content has-text-justified">
             <p>
-              RandLA-Net uses random sampling for efficiency and incorporates local feature aggregation with attention mechanisms to preserve 
+              RandLA-Net uses random sampling for efficiency and incorporates local feature aggregation with attention mechanisms to preserve
               important features during downsampling, making it effective for multi-scale crater segmentation.
+
+              <br>
+              <strong>The key difference between PointNet++ and RandLA-Net is the local feature aggregation module.</strong>
+                The local feature aggregation module in RandLA-Net effectively preserves the complex local spatial
+                structures of large-scale point clouds by explicitly modeling neighboring geometric structures and
+                significantly enlarging the receptive field. At the same time, it is composed only of feed-forward MLPs,
+                thus maintaining good computational efficiency.
             </p>
           </div>
           <div class="columns is-centered">
@@ -306,13 +329,13 @@
   <!-- Results Section -->
   <section class="section">
     <div class="container is-max-desktop">
-      
+
       <div class="columns is-centered has-text-centered">
         <div class="column is-four-fifths">
           <h2 class="title is-3">Results</h2>
           <div class="content has-text-justified">
             <p>
-              We evaluated the three models on our Martian crater dataset, demonstrating the effectiveness of different architectural choices 
+              We evaluated the three models on our Martian crater dataset, demonstrating the effectiveness of different architectural choices
               for multi-scale crater segmentation.
             </p>
           </div>
@@ -368,14 +391,39 @@
             </table>
           </div>
           <div class="title is-6 has-text-centered" style="margin-top: 1rem;">Quantitative comparison (mIoU: mean Intersection over Union)</div>
+          <br>
+          <div class="columns is-centered">
+            <div class="column is-four-fifths">
+              <div class="content has-text-justified">
+                <p>
+                  The quantitative results demonstrate that RandLA-Net outperforms the other models across most metrics,
+                  achieving the highest accuracy (0.9283), recall (0.9247), and mean Intersection over Union (mIoU, 0.8995).
+                  While PointNet++ attains the best precision (0.9042) and competitive F1-score (0.8888), RandLA-Net's balanced
+                  high recall and mIoU indicate superior overall segmentation performance on the dataset. These findings suggest
+                  that incorporating advanced architectures like RandLA-Net can significantly enhance crater detection and segmentation
+                  from high-resolution DEM data compared to traditional point-based models.
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
+      <div class="columns is-centered">
+        <div class="column is-four-fifths">
+          <h3 class="title is-4">Qualitative Results</h3>
+          <div class="content has-text-justified">
+            <p>
+              We visualize the model predictions and the ground truth annotations for the three models.
+            </p>
+          </div>
+        </div>
+      </div>
       <!-- Model Results -->
       <div class="columns is-centered">
         <div class="column is-four-fifths">
-          <h3 class="title is-4">Model Predictions</h3>
-          
+          <h4 class="title is-4">Model Predictions</h4>
+
           <!-- Ground Truth -->
           <div class="columns is-vcentered">
             <div class="column is-2">
@@ -418,32 +466,36 @@
         </div>
       </div>
 
+      <div class="columns is-centered">
+        <div class="column is-four-fifths">
+          <div class="content has-text-justified">
+            <p>
+              We visualize the ground truth annotations alongside the model predictions below.<br>
+              <strong>PointNet</strong> struggles with fragmentation—many small craters are missed, and boundaries are fuzzy.<br>
+              <strong>PointNet++</strong> improves overall structure, but still misses finer details.<br>
+              <strong>RandLA-Net</strong> produces the closest match to the ground truth—its boundaries are clearer, and it captures both small and large craters effectively.
+            </p>
+          </div>
+        </div>
+      </div>
       <!-- Key Findings -->
       <div class="columns is-centered">
         <div class="column is-four-fifths">
           <h3 class="title is-4">Key Findings</h3>
           <div class="content has-text-justified">
             <p>
-              <b>Multi-scale Performance:</b> RandLA-Net performs best at crater edge extraction due to its local feature aggregation module. 
+              <b>Multi-scale Performance:</b> RandLA-Net performs best at crater edge extraction due to its local feature aggregation module.
               PointNet++ outperforms PointNet through hierarchical sampling.
             </p>
             <p>
-              <b>Computational Efficiency:</b> RandLA-Net's random sampling is more efficient than PointNet++'s FPS, which is more efficient 
+              <b>Computational Efficiency:</b> RandLA-Net's random sampling is more efficient than PointNet++'s FPS, which is more efficient
               than PointNet's approach.
             </p>
             <p>
-              <b>Segmentation Quality:</b> PointNet++ and PointNet tend to misclassify background as craters, while RandLA-Net may miss smaller 
+              <b>Segmentation Quality:</b> PointNet++ and PointNet tend to misclassify background as craters, while RandLA-Net may miss smaller
               craters—different strategies suit different application scenarios.
             </p>
           </div>
-                    <div class="columns is-centered">
-                      <div class="column is-four-fifths">
-                        <img src="./static/images/crater_extraction.png" alt="Crater extraction results"
-                          style="width: 70%; display: block; margin: 0 auto;">
-                          <br>
-                        <div class="title is-6 has-text-centered">Visualization of crater extraction</div>
-                      </div>
-                    </div>
         </div>
       </div>
     </div>
@@ -452,13 +504,13 @@
   <!-- Conclusion Section -->
   <section class="section">
     <div class="container is-max-desktop">
-      
+
       <div class="columns is-centered has-text-centered">
         <div class="column is-four-fifths">
           <h2 class="title is-3">Conclusion</h2>
           <div class="content has-text-justified">
             <p>
-              We demonstrate the effectiveness of multi-scale sampling strategies for handling the vast scale variation of Martian craters 
+              We demonstrate the effectiveness of multi-scale sampling strategies for handling the vast scale variation of Martian craters
               using three point cloud networks. This work lays the foundation for future Martian surface classification and landing site selection.
             </p>
             <p>
@@ -480,7 +532,7 @@
   <!-- References Section -->
   <section class="section">
     <div class="container is-max-desktop">
-      
+
       <div class="columns is-centered has-text-centered">
         <div class="column is-four-fifths">
           <h2 class="title is-3">References</h2>
